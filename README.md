@@ -1,4 +1,0 @@
-laravel5
-========
-
-framework
