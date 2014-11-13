@@ -1,0 +1,32 @@
+{
+  "name": "vyvernCMS",
+  "dependencies": {
+    "modernizr": "latest",
+    "foundation": "latest",
+    "jquery": "latest",
+    "select2": "latest",
+    "ckeditor": "latest",
+    "Picker": "~3.1.2",
+    "jquery-ui-sortable": "latest",
+    "jquery-ui-draggable": "latest"
+  },
+  "version": "0.0.1",
+  "homepage": "https://github.com/kickenhio/vyvernCMS",
+  "description": "vyvernCMS",
+  "keywords": [
+    "vyvern"
+  ],
+  "authors": [
+    "KickenhiO"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/packages",
+    "test",
+    "tests"
+  ]
+}
