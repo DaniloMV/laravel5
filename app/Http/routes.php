@@ -32,3 +32,4 @@ foreach((array) $list as $cat) {
 //Aplikacje
 Route::any('admin/users/{action?}', array('uses' => 'Applications\UserController@init'));
 Route::any('admin/blocks/{action?}', array('uses' => 'Applications\BlockController@init'));
+Route::any('admin/categories/{action?}', array('uses' => 'Applications\CategoryController@init'));

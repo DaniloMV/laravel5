@@ -21,8 +21,11 @@
 				</td>
 			</tr>
 			<tr>
-				<td>
+				<td style="background:pink;">
 					{!! $menumodulu !!}
+
+					<h4>Kategorie</h4>
+
 					{!! $menukategorii !!}
 				</td>
 				<td style="position:absolute;">

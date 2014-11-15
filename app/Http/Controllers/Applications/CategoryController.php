@@ -4,38 +4,31 @@ use App\Http\Controllers\PanelController;
 use View;
 use DB;
 
-class BlockController extends PanelController {
+class CategoryController extends PanelController {
 	
-	private $section;
+	private $lang;
+	private $id;
 
-	public function additionalMenu()
-	{
-		return '<a href="/admin/blocks/home">HomePage Block</a><br/><a href="/admin/blocks/default">Default Block</a>';
-	}
+	public function getContent() {
+		
+		$html = '';
+		list($jezyk,$kategoria) = explode('_',$this->action);
+		$this->lang = $jezyk;
+		$this->id = $kategoria;
 
-	public function get_home()
-	{
-		$this->section = 'home';
-		return $this->get_index();
-	}
+		$funkcja = strtolower($this->method).'_blockSetting';
+		$html .= $this->{$funkcja}();
 
-	public function get_default()
-	{
-		$this->section = 'default';
-		return $this->get_index();
+		return $html;
 	}
 
 	public function get_index()
 	{
+		return 'Category controller';
+	}
 
-		if(empty($this->section) || $this->section == 'home') {
-			$this->section = 'home';
-			$where = 'is_homepage';
-		} else {
-			$where = 'is_default';
-		}
-
-		//wszystkie bloczki
+	public function get_blockSetting()
+	{
 		$imitateDatabaseList = array(
 			array('name' => 'Block1', 'id' => '1'),
 			array('name' => 'Block2', 'id' => '2'),
@@ -56,8 +49,8 @@ class BlockController extends PanelController {
 				id = parent_id AND
 				c.lang = r.lang
 			WHERE 
-				".$where." = TRUE AND 
-				c.lang = 'pl' 
+				category_id = '".$this->id."' AND 
+				c.lang = '".$this->lang."' 
 			ORDER BY position ASC
 		");
 
@@ -74,26 +67,18 @@ class BlockController extends PanelController {
 			$data['block'][$region['region']][$region['position']] = array('id' => $block['id'], 'name' => $block['name']);
 			ksort($data['block'][$region['region']]);
 		}
-
-		$data['action'] = 'admin/blocks/'.$this->section;
+		$data['action'] = 'admin/categories/'.$this->action;
 
 		return View::make('admin/blocks_controller', $data);
 	}
 
-	public function post_home()
+	public function post_blockSetting()
 	{
-		if(empty($this->section) || $this->section == 'home') {
-			$this->section = 'home';
-			$where = 'is_homepage';
-			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => TRUE, 'is_default' => FALSE);
-		} else {
-			$where = 'is_default';
-			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => FALSE, 'is_default' => TRUE);
-		}
+		$params = array('category_id' => $this->id, 'lang' => $this->lang, 'is_homepage' => FALSE, 'is_default' => FALSE);
 
 		$data['block'] = $_POST['block'];
 
-		DB::delete('delete from core_block_position where '.$where.' = TRUE');
+		DB::delete('delete from core_block_position where category_id = '.$this->id);
 
 		$id = DB::table('core_block_position')->insertGetId(
 			$params
@@ -104,23 +89,13 @@ class BlockController extends PanelController {
 		if(!empty($data['block'])) {
 			foreach($data['block'] as $region => $block) {
 				foreach($block as $block_id => $record) {
-				 	$blocks[] = array('parent_id' => $id, 'lang' => 'pl', 
+				 	$blocks[] = array('parent_id' => $id, 'lang' => $this->lang, 
 				 		'region' => $region, 'block_id' => $block_id, 'position' => $record);
 				}
 			}
 			DB::table('core_block_position_row')->insert($blocks);
 		}
 
-		$akcja = 'get_'.$this->section;
-
-		return $this->$akcja();
+		return $this->get_blockSetting();
 	}
-
-	public function post_default()
-	{
-		$this->section = 'default';
-		return $this->post_home();
-	}
-
-
 }

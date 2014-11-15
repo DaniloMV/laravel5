@@ -89,7 +89,7 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 	});
 </script>
 
-{!! Form::open(array('url' => 'admin/blocks/'.$action)) !!}
+{!! Form::open(array( 'url' => $action )) !!}
 <div class="sidebar">
 	@include('admin/region', array('block'=> $block, 'id' => '0' ))
 </div>
