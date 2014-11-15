@@ -7,14 +7,7 @@ use DB;
 
 abstract class DefaultController extends Controller {
 
-	private $regions = array(
-		'1',
-		'2',
-		'3',
-		'4',
-		'5'
-	);
-
+	protected $regions = array( '1', '2', '3', '4', '5' );
 	protected $layout = 'layout.master';
 	protected $actions = array();
 	protected $id = null;

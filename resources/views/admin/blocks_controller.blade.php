@@ -17,7 +17,7 @@
 	border: 1px solid red;
 	height: 500px;
 	position: relative;
-	margin: auto;
+	margin-left: 400px;
 }
 .header {
 	width: 100%;
@@ -89,7 +89,7 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 	});
 </script>
 
-{!! Form::open(array('url' => 'admin/blocks')) !!}
+{!! Form::open(array('url' => 'admin/blocks/'.$action)) !!}
 <div class="sidebar">
 	@include('admin/region', array('block'=> $block, 'id' => '0' ))
 </div>

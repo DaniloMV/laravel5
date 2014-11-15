@@ -7,7 +7,7 @@ class Admin extends PanelController {
 		
 	public function get_index()
 	{
-		echo 'AdminHomePage';
+		return 'AdminHomePageX';
 	}
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 Route::controller('auth', 'AuthController');
-Route::any('admin', array('uses' => 'Modules\HomePageModule\Admin@get_index'));
+Route::any('admin', array('uses' => 'Modules\HomePageModule\Admin@init'));
 Route::get('/', [
 	'uses' => 'Modules\HomePageModule\Module@index',
 	'as' => 'home',
@@ -21,14 +21,13 @@ foreach((array) $list as $cat) {
 	else
 		$prefix = $cat->path;
 
-	Route::group([ 'prefix' => $prefix, 'id' => $cat->id, 'lang' => $cat->lang,], 
-	function() use ($category) {
-		require app_path('Http/Controllers/Modules/'.$category.'/routes.php');
+	Route::group([ 'prefix' => $prefix, 'id' => $cat->id, 'lang' => $cat->lang ],  function() use ($category)
+	{
+			require app_path('Http/Controllers/Modules/'.$category.'/routes.php');
 	});
 
-	Route::any('admin/'.$cat->lang.$cat->id.'/{action?}', array('before' => 'auth.basic', 'uses' => 'Modules\\'.$cat->controller.'\Admin@init'));
+	Route::any('admin/'.$cat->lang.$cat->id.'/{action?}', array('id' => $cat->id, 'uses' => 'Modules\\'.$cat->controller.'\Admin@init'));
 }
-
 
 //Aplikacje
 Route::any('admin/users/{action?}', array('uses' => 'Applications\UserController@init'));

@@ -6,8 +6,35 @@ use DB;
 
 class BlockController extends PanelController {
 	
+	private $section;
+
+	public function additionalMenu()
+	{
+		return '<a href="/admin/blocks/home">HomePage Block</a><br/><a href="/admin/blocks/default">Default Block</a>';
+	}
+
+	public function get_home()
+	{
+		$this->section = 'home';
+		return $this->get_index();
+	}
+
+	public function get_default()
+	{
+		$this->section = 'default';
+		return $this->get_index();
+	}
+
 	public function get_index()
 	{
+
+		if(empty($this->section) || $this->section == 'home') {
+			$this->section = 'home';
+			$where = 'is_homepage';
+		} else {
+			$where = 'is_default';
+		}
+
 		//wszystkie bloczki
 		$imitateDatabaseList = array(
 			array('name' => 'Block1', 'id' => '1'),
@@ -19,13 +46,19 @@ class BlockController extends PanelController {
 
 		//rozmieszczone bloczki
 		$list = DB::select("
-			select block_id, region, position
-			from core_block_position as c
-			left join core_block_position_row as r
-			on id = parent_id AND
-			c.lang = r.lang
-			where is_homepage = TRUE AND c.lang = 'pl' 
-			order by position asc
+			SELECT 
+				block_id, region, position
+			FROM 
+				core_block_position AS c
+			LEFT JOIN 
+				core_block_position_row AS r
+			ON 
+				id = parent_id AND
+				c.lang = r.lang
+			WHERE 
+				".$where." = TRUE AND 
+				c.lang = 'pl' 
+			ORDER BY position ASC
 		");
 
 		$placed = array();
@@ -42,17 +75,28 @@ class BlockController extends PanelController {
 			ksort($data['block'][$region['region']]);
 		}
 
+		$data['action'] = $this->section;
+
 		return View::make('admin/blocks_controller', $data);
 	}
 
-	public function post_index()
+	public function post_home()
 	{
+		if(empty($this->section) || $this->section == 'home') {
+			$this->section = 'home';
+			$where = 'is_homepage';
+			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => TRUE, 'is_default' => FALSE);
+		} else {
+			$where = 'is_default';
+			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => FALSE, 'is_default' => TRUE);
+		}
+
 		$data['block'] = $_POST['block'];
 
-		DB::delete('delete from core_block_position where is_homepage = TRUE');
+		DB::delete('delete from core_block_position where '.$where.' = TRUE');
 
 		$id = DB::table('core_block_position')->insertGetId(
-    		array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => TRUE, 'is_default' => FALSE)
+			$params
 		);
 		
 		$blocks = array();
@@ -67,6 +111,16 @@ class BlockController extends PanelController {
 			DB::table('core_block_position_row')->insert($blocks);
 		}
 
-		return $this->get_index();
+		$akcja = 'get_'.$this->section;
+
+		return $this->$akcja();
 	}
+
+	public function post_default()
+	{
+		$this->section = 'default';
+		return $this->post_home();
+	}
+
+
 }
