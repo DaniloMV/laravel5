@@ -1,11 +1,15 @@
 <!doctype html>
 <html lang="pl">
 <head>
+	{!! HTML::style('/packages/foundation/css/normalize.css') !!}
+	{!! HTML::style('/packages/foundation/css/foundation.css') !!}
 	{!! HTML::script('/packages/jquery/dist/jquery.min.js') !!}
 	{!! HTML::script('/packages/jquery-ui/jquery-ui.min.js') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.structure.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.theme.min.css') !!}
+	{!! HTML::script('/packages/foundation/js/foundation.min.js') !!}
+	{!! HTML::script('/packages/foundation/js/foundation/foundation.tab.js') !!}
 </head>
 <body>
 	<div class="welcome">
@@ -34,5 +38,8 @@
 			</tr>
 		</table>
 	</div>
+	<script type="application/javascript">
+		$(document).foundation();
+	</script>
 </body>
 </html>

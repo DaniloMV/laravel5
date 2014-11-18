@@ -29,8 +29,20 @@ abstract class DefaultController extends Controller {
 
 		if($this->homepage)
 			$whereSql = " is_homepage = TRUE ";
-		else
-			$whereSql = " is_default = TRUE ";
+		else {
+			$individual = DB::table('core_block_position')
+						->where(array('category_id' => $this->id, 'lang' => $this->lang))
+						->count();
+
+			if(intval($individual))
+			{
+				$whereSql = " category_id = ".$this->id;
+			}
+			else
+			{
+				$whereSql = " is_default = TRUE ";
+			}
+		}
 
 		$list = DB::select("
 			select 

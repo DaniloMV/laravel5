@@ -3,6 +3,7 @@
 use App\Http\Controllers\PanelController;
 use View;
 use DB;
+use Foundation;
 
 class CategoryController extends PanelController {
 	
@@ -16,10 +17,21 @@ class CategoryController extends PanelController {
 		$this->lang = $jezyk;
 		$this->id = $kategoria;
 
+		#pobieranie bloków
 		$funkcja = strtolower($this->method).'_blockSetting';
 		$html .= $this->{$funkcja}();
 
-		return $html;
+		$ff = new Foundation;
+		$ff->startTab();
+		$ff->addTab('jeden');
+		$ff->addContent($html);
+		$ff->addTab('dwa');
+		$ff->addContent('bunia');
+		$ff->addTab('trzy');
+		$ff->addContent('bunia');
+		$ff->closeTab();	
+
+		return $ff->renderContent();
 	}
 
 	public function get_index()
