@@ -89,7 +89,6 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 	});
 </script>
 
-{!! Form::open(array( 'url' => $action )) !!}
 <div class="sidebar">
 	@include('admin/region', array('block'=> $block, 'id' => '0' ))
 </div>
@@ -111,8 +110,4 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 	<div class="footer">
 		@include('admin/region', array('block'=> $block, 'id' => '5' ))
 	</div>
-</div>
-<div class="submit">
-		{!! Form::submit('save!') !!}
-		{!! Form::close() !!}
 </div>

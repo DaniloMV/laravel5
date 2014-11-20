@@ -22,16 +22,22 @@ class CategoryController extends PanelController {
 		$html .= $this->{$funkcja}();
 
 		$ff = new Foundation;
-		$ff->startTab();
-		$ff->addTab('jeden');
-		$ff->addContent($html);
-		$ff->addTab('dwa');
-		$ff->addContent('bunia');
-		$ff->addTab('trzy');
-		$ff->addContent('bunia');
-		$ff->closeTab();	
+		$form['url'] = 'admin/categories/'.$this->action;
+		
+		$ff->startForm($form);
+		$ff->startTab('podstawowe dane','block-icon');
 
-		return $ff->renderContent();
+		$ff->addContent('sss');
+		$ff->addTab('zarzadzanie blokami');
+		$ff->addContent($html);
+		$ff->addTab('narzedzia seo');
+		$ff->addContent('sss');
+
+		$ff->closeTab();
+		$ff->closeForm();
+
+		
+		return $ff->show();
 	}
 
 	public function get_index()

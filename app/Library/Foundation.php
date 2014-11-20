@@ -1,94 +1,86 @@
 <?php namespace App\Library;
 
 use View;
+use ContentContainer;
+use Form;
 
 class Foundation {
 
-	private $tabID = 0;
-	private $tabContent = array();
-	private $tempTabContent = array();
-	private $html = array();
+	private $containerID = 0;
+	private $contentContainers = array();
+	private $html = '';
 
-	public function __construct()
-	{
-		
-	}
-	
-	public function startTab()
-	{
-		$this->tabID++;
-		$this->tempTabContent[$this->tabID]['current'] = 0;
+	public function startForm($parameters) {
+		$this->addContent(Form::open($parameters));
 	}
 
-	public function addTab($name)
+	public function closeForm($submit = 'Save', $back = '') 
 	{
-		$this->tempTabContent[$this->tabID]['current']++;	
-		$this->tempTabContent[$this->tabID]['tab'][$this->tempTabContent[$this->tabID]['current']] = $name;
+		$content = '';
+		$content .= Form::submit($submit);
+		$content .= Form::close();
+		$this->addContent($content);
+	}	
+
+	public function startTab($name, $class = '')
+	{
+		$this->containerID++;
+		$this->contentContainers[$this->containerID] = new ContentContainer('tabs');
+		$this->containerID++;
+		$this->contentContainers[$this->containerID] = new ContentContainer('tab');
+		$this->contentContainers[$this->containerID]->header = $name;
+		$this->contentContainers[$this->containerID]->class = $class;
+	}
+
+	public function addTab($name, $class = '')
+	{
+		$this->containerID++;
+		$this->contentContainers[$this->containerID] = new ContentContainer('tab');
+		$this->contentContainers[$this->containerID]->header = $name;
+		$this->contentContainers[$this->containerID]->class = $class;
 	}
 
 	public function closeTab()
 	{
-		$this->tabContent[] = $this->tempTabContent[$this->tabID];
-		unset($this->tempTabContent[$this->tabID]);
+		$headers = array();
+		$temp = array();
+		$html = '';
 
-		$this->tabID--;
-
-		if(!$this->tabID) {
-			$this->html[] = $this->renderTabs();
+		while($this->contentContainers[$this->containerID]->type != 'tabs' ) {
+			$temp[] = $this->contentContainers[$this->containerID]->getContent();
+			$classes[] = $this->contentContainers[$this->containerID]->class;
+			$headers[] = $this->contentContainers[$this->containerID]->header;
+			unset($this->contentContainers[$this->containerID]);
+			$this->containerID--;
 		}
-	}
+		
+		$temp = array_reverse($temp);
+		$classes = array_reverse($classes);
+		$headers = array_reverse($headers);
+		
+		$active = (isset($_POST['tab_active'])) ? $_POST['tab_active'] : 0;
+		
+		$html .= Form::hidden('tab_active', $active);
+		$html .= $this->contentContainers[$this->containerID]->getTab($headers, $classes);
+		$html .= $this->contentContainers[$this->containerID]->getTabContent($temp);
 
-	public function renderTabs()
-	{
-
-		$class = 'class="active"';
-		$tab ='<dl class="tabs" data-tab>';
-
-		foreach($this->tabContent as $tmp) {
-			foreach($tmp['tab'] as $id => $tabc)
-			{
-				$tab .= '<dd '.$class.'><a href="#panel'.$id.'">'.$tabc.'</a></dd>';
-				$class = '';
-			}
-		}
-		$tab .= '</dl>';
-
-		$class = 'class="content active"';
-		$html ='<div class="tabs-content">';
-		foreach($this->tabContent as $tmp) {
-			foreach($tmp['html'] as $id => $content)
-			{
-				foreach($content as $code)
-				{
-				  $html .= '<div '.$class.' id="panel'.$id.'">'.$code.'</div>';
-				  $class = 'class="content"';
-				}
-			}
-		}
-		$html .= '</div>';
-
-		return $tab.$html;		
-
+		unset($this->contentContainers[$this->containerID]);
+		$this->containerID--;
+		$this->addContent($html);
 	}
 
 	public function addContent($content)
 	{
-		if($this->tabID) {
-			$this->tempTabContent[$this->tabID]['html'][$this->tempTabContent[$this->tabID]['current']][] = $content;
+		if(!empty($this->contentContainers)) {
+			$this->contentContainers[$this->containerID]->addContent($content);		
 		} else {
-			$this->html[] = $content;
+			$this->html .= $content;
 		}
 	}
 
-	public function renderContent()
+	public function show()
 	{
-		$html = '';
-		foreach($this->html as $content)
-		{
-			$html .= $content;
-		}
-
-		return $html;
+		return $this->html;
 	}
 
 }

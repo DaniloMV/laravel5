@@ -202,6 +202,7 @@ return [
 		'Form'		=> 'Illuminate\Html\FormFacade',
 		'HTML'		=> 'Illuminate\Html\HtmlFacade',
 		'Foundation'=> 'App\Library\Foundation',
+		'ContentContainer'=> 'App\Library\ContentContainer',
 	],
 
 ];
