@@ -26,10 +26,11 @@ class CategoryController extends PanelController {
 		
 		$ff->startForm($form);
 		$ff->startTab('podstawowe dane','block-icon');
-
 		$ff->addContent('sss');
+
 		$ff->addTab('zarzadzanie blokami');
 		$ff->addContent($html);
+
 		$ff->addTab('narzedzia seo');
 		$ff->addContent('sss');
 
@@ -38,11 +39,6 @@ class CategoryController extends PanelController {
 
 		
 		return $ff->show();
-	}
-
-	public function get_index()
-	{
-		return 'Category controller';
 	}
 
 	public function get_blockSetting()

@@ -17,7 +17,7 @@ class Foundation {
 	public function closeForm($submit = 'Save', $back = '') 
 	{
 		$content = '';
-		$content .= Form::submit($submit);
+		$content .= Form::submit($submit, array('class' => 'button'));
 		$content .= Form::close();
 		$this->addContent($content);
 	}	

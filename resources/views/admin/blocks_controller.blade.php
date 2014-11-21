@@ -5,19 +5,13 @@
 	position: relative;
 }
 .sidebar {
-	float:left;
-	width:250px;
 	background: lightblue;
 	height: 500px;
-	position: absolute;
-	left: 0;
 }
 .container {
-	width: 400px;
 	border: 1px solid red;
 	height: 500px;
 	position: relative;
-	margin-left: 400px;
 }
 .header {
 	width: 100%;
@@ -89,25 +83,31 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 	});
 </script>
 
-<div class="sidebar">
-	@include('admin/region', array('block'=> $block, 'id' => '0' ))
-</div>
-<div class="container">
-	<div class="header">
-		@include('admin/region', array('block'=> $block, 'id' => '1' ))
+<div class="row">
+	<div class="small-3 columns sidebar">
+		@include('admin/region', array('block'=> $block, 'id' => '0' ))
 	</div>
-	<div class="menu">
-		@include('admin/region', array('block'=> $block, 'id' => '2' ))
-	</div>
-	<div class="content">
-		<div class="left">
-			@include('admin/region', array('block'=> $block, 'id' => '3' ))
+	<div class="small-6 columns">
+		<div class="container">
+			<div class="header">
+				@include('admin/region', array('block'=> $block, 'id' => '1' ))
+			</div>
+			<div class="menu">
+				@include('admin/region', array('block'=> $block, 'id' => '2' ))
+			</div>
+			<div class="content">
+				<div class="left">
+					@include('admin/region', array('block'=> $block, 'id' => '3' ))
+				</div>
+				<div class="middle">
+					@include('admin/region', array('block'=> $block, 'id' => '4' ))
+				</div>
+			</div>
+			<div class="footer">
+				@include('admin/region', array('block'=> $block, 'id' => '5' ))
+			</div>
 		</div>
-		<div class="middle">
-			@include('admin/region', array('block'=> $block, 'id' => '4' ))
-		</div>
 	</div>
-	<div class="footer">
-		@include('admin/region', array('block'=> $block, 'id' => '5' ))
+	<div class="small-3 columns">
 	</div>
 </div>

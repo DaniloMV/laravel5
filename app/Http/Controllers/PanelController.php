@@ -52,8 +52,16 @@ abstract class PanelController extends Controller {
 		$menu = '<br>';
 		$list = DB::select('select * from core_categories where id <> 0 ');
 		foreach((array) $list as $cat) {
-			$menu .= '<a href="/admin/'.$cat->lang.$cat->id.'">'.$cat->name.'</a><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'"><span style="float:right; display:inline-block; padding: 3px; background:red; margin-top:10px;"></span></a><br>';
+			//$menu .= '<a href="/admin/'.$cat->lang.$cat->id.'">'.$cat->name.'</a><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'"><span style="float:right; display:inline-block; padding: 3px; background:red; margin-top:10px;"></span></a><br>';
+			$menu .= '<a style="width:100%; margin-bottom:5px;"href="/admin/'.$cat->lang.$cat->id.'" class="button tiny full split">'.$cat->name.'
+						<span data-dropdown="drop"></span>
+					  </a>
+					  <ul id="drop" class="f-dropdown" data-dropdown-content>
+					  	<li><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'">Zarzadzaj</a></li>
+					  	<li><a href="#">Usun</a></li>
+					  </ul>';
 		}
+
 
 		return $menu;
 	}

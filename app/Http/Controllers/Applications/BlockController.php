@@ -3,6 +3,7 @@
 use App\Http\Controllers\PanelController;
 use View;
 use DB;
+use Foundation;
 
 class BlockController extends PanelController {
 	
@@ -10,7 +11,14 @@ class BlockController extends PanelController {
 
 	public function additionalMenu()
 	{
-		return '<a href="/admin/blocks/home">HomePage Block</a><br/><a href="/admin/blocks/default">Default Block</a>';
+		$html = '<a style="width:100%; margin-bottom:5px;"href="/admin/blocks/home" class="button tiny">
+					HomePage Block
+				  </a>
+				  <a style="width:100%; margin-bottom:5px;"href="/admin/blocks/default" class="button tiny">
+					Defaults Block
+				  </a>';
+		
+	 	return $html;
 	}
 
 	public function get_home()
@@ -27,6 +35,11 @@ class BlockController extends PanelController {
 
 	public function get_index()
 	{
+		$ff = new Foundation;
+		//$form['url'] = 'admin/categories/'.$this->action;
+		$form['url'] = 'admin/blocks/'.$this->section;
+		
+		$ff->startForm($form);
 
 		if(empty($this->section) || $this->section == 'home') {
 			$this->section = 'home';
@@ -75,9 +88,13 @@ class BlockController extends PanelController {
 			ksort($data['block'][$region['region']]);
 		}
 
-		$data['action'] = 'admin/blocks/'.$this->section;
+		$html = View::make('admin/blocks_controller', $data);
+		
+		$ff->addContent($html);
+		$ff->closeForm();
 
-		return View::make('admin/blocks_controller', $data);
+		
+		return $ff->show();
 	}
 
 	public function post_home()
