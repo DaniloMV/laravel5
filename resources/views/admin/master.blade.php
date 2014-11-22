@@ -8,7 +8,9 @@
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.structure.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.theme.min.css') !!}
+	{!! HTML::style('/packages/jstree/dist/themes/default/style.min.css') !!}
 	{!! HTML::script('/packages/foundation/js/foundation.min.js') !!}
+	{!! HTML::script('/packages/jstree/dist/jstree.min.js') !!}
 	{!! HTML::script('/packages/foundation/js/foundation/foundation.tab.js') !!}
 </head>
 <body>
@@ -24,13 +26,14 @@
 			</li>
 			<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li> </ul> 
 			<section class="top-bar-section"> 
-			 <ul class="left">
-			 <li class="active"><a href="/admin">Home Page</a></li>
-			 <li class="has-dropdown"> <a href="#">Applications</a> 
-			 <ul class="dropdown"> <li><a href="/admin/blocks">Block management</a></li> 
-			 </ul>
-			 </li> 
-			 </ul>
+				 <ul class="left">
+					 <li class="active"><a href="/admin">Home Page</a></li>
+					 <li class="has-dropdown"> <a href="#">Applications</a> 
+						 <ul class="dropdown">
+						 	<li><a href="/admin/blocks">Block management</a></li> 
+						 </ul>
+					 </li> 
+				 </ul>
 			 </section> 
 			 </nav>
 		
@@ -38,7 +41,6 @@
 		<section>
 			<div class="small-12 large-2 columns" style="background:lightblue;">
 				{!! $menumodulu !!}
-
 				{!! $menukategorii !!}
 			</div>
 			<div class="small-12 large-10 columns">
@@ -48,6 +50,20 @@
 	</div>
 	<script type="application/javascript">
 		$(document).foundation();
+		$(function () { 
+			$('#jstree_demo_div').jstree({ 
+				'core' : {
+				    'data' : [
+				       { "id" : "ajson2", "parent" : "#", "text" : "Blok kategorii top", "state" : { "disabled" : "true", "opened" : "true" } },
+				       { "id" : "ajson3", "parent" : "ajson2", "text" : "Blog", "a_attr" : { 'href' : '/admin/pl2' } },
+				       { "id" : "ajson4", "parent" : "ajson2", "text" : "Blog2", "a_attr" : { 'href' : '/admin/pl3' } },
+				    ]
+				},
+				'plugins' : ['dnd']
+			}).on("select_node.jstree", function (e, data) {
+           		document.location = data.instance.get_node(data.node, true).children('a').attr('href');
+    		});
+		 });
 	</script>
 </body>
 </html>

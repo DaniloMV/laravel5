@@ -50,6 +50,7 @@ abstract class PanelController extends Controller {
 	public function categoryMenu()
 	{
 		$menu = '<br>';
+
 		$list = DB::select('select * from core_categories where id <> 0 ');
 		foreach((array) $list as $cat) {
 			//$menu .= '<a href="/admin/'.$cat->lang.$cat->id.'">'.$cat->name.'</a><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'"><span style="float:right; display:inline-block; padding: 3px; background:red; margin-top:10px;"></span></a><br>';
@@ -62,6 +63,8 @@ abstract class PanelController extends Controller {
 					  </ul>';
 		}
 
+		$menu = '<ul class="pricing-table"> <li class="title">Drzewko kategorii</li><li style="background:white;"> <div id="jstree_demo_div"></div></li></ul>';
+		
 
 		return $menu;
 	}

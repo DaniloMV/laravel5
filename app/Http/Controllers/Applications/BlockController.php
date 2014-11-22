@@ -11,13 +11,18 @@ class BlockController extends PanelController {
 
 	public function additionalMenu()
 	{
-		$html = '<a style="width:100%; margin-bottom:5px;"href="/admin/blocks/home" class="button tiny">
+		$html = '<ul class="pricing-table"> <li class="title">Menu aplikacji</li>';
+
+		$html .= '<li class="bullet-item"><a style="width:100%; margin-bottom:5px;"href="/admin/blocks/home" class="button tiny">
 					HomePage Block
-				  </a>
-				  <a style="width:100%; margin-bottom:5px;"href="/admin/blocks/default" class="button tiny">
+				  </a></li>
+				  <li class="bullet-item"><a style="width:100%; margin-bottom:5px;"href="/admin/blocks/default" class="button tiny">
 					Defaults Block
-				  </a>';
+				  </a></li>';
 		
+		$html .= '</ul>';
+		
+
 	 	return $html;
 	}
 
@@ -35,19 +40,20 @@ class BlockController extends PanelController {
 
 	public function get_index()
 	{
-		$ff = new Foundation;
-		//$form['url'] = 'admin/categories/'.$this->action;
-		$form['url'] = 'admin/blocks/'.$this->section;
-		
-		$ff->startForm($form);
 
 		if(empty($this->section) || $this->section == 'home') {
 			$this->section = 'home';
 			$where = 'is_homepage';
 		} else {
+			$this->section = 'default';
 			$where = 'is_default';
 		}
 
+		$ff = new Foundation;
+		//$form['url'] = 'admin/categories/'.$this->action;
+		$form['url'] = 'admin/blocks/'.$this->section;
+		
+		$ff->startForm($form);
 		//wszystkie bloczki
 		$imitateDatabaseList = array(
 			array('name' => 'Block1', 'id' => '1'),
@@ -104,6 +110,7 @@ class BlockController extends PanelController {
 			$where = 'is_homepage';
 			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => TRUE, 'is_default' => FALSE);
 		} else {
+			$this->section = 'default';
 			$where = 'is_default';
 			$params = array('category_id' => 0, 'lang' => 'pl', 'is_homepage' => FALSE, 'is_default' => TRUE);
 		}
