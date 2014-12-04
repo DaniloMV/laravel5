@@ -11,6 +11,7 @@
 	{!! HTML::style('/packages/jstree/dist/themes/default/style.min.css') !!}
 	{!! HTML::script('/packages/foundation/js/foundation.min.js') !!}
 	{!! HTML::script('/packages/jstree/dist/jstree.min.js') !!}
+	{!! HTML::script('/packages/jstree/dist/jstreegrid.js') !!}
 	{!! HTML::script('/packages/foundation/js/foundation/foundation.tab.js') !!}
 </head>
 <body>
@@ -48,21 +49,61 @@
 			</div>
 		</section>
 	</div>
+	<style>
+		.jstree-default .jstree-node {
+			position: relative;
+		}
+	</style>
 	<script type="application/javascript">
 		$(document).foundation();
 		$(function () { 
 			$('#jstree_demo_div').jstree({ 
 				'core' : {
-				    'data' : [
-				       { "id" : "ajson2", "parent" : "#", "text" : "Blok kategorii top", "state" : { "disabled" : "true", "opened" : "true" } },
-				       { "id" : "ajson3", "parent" : "ajson2", "text" : "Blog", "a_attr" : { 'href' : '/admin/pl2' } },
-				       { "id" : "ajson4", "parent" : "ajson2", "text" : "Blog2", "a_attr" : { 'href' : '/admin/pl3' } },
-				    ]
+					'data' : [
+					   { "id" : "ajson2", 'data': {'icon': "<div style='height:24px'></div>"}, "parent" : "#", "text" : "Blok kategorii top", "state" : { "disabled" : "true", "opened" : "true" } },
+					   { "id" : "pl_6", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson2", "text" : "Blog", "a_attr" : { 'href' : '/admin/pl2' } },
+					   { "id" : "pl_2", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson2", "text" : "Blog2", "a_attr" : { 'href' : '/admin/pl3' } },
+					   { "id" : "ajson1", 'data': {'icon': "<div style='height:24px'></div>"}, "parent" : "#", "text" : "Blok kategorii inny", "state" : { "disabled" : "true", "opened" : "true" } },
+					   { "id" : "pl_4", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson1", "text" : "Blogysg", "a_attr" : { 'href' : '/admin/pl2' } },
+					   { "id" : "pl_3", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson1", "text" : "Blogsdsdsd", "a_attr" : { 'href' : '/admin/pl3' } },
+					],
+					 "themes" : {
+					      "variant" : "medium"
+					 },
+					"check_callback" : 
+						function(operation, node, node_parent, node_position, more) {
+					
+						if (operation === "move_node") {
+
+							if(node_parent.parent != null && node.parent != '#')
+								return true;
+							else 
+								return false;
+						}
+						return true;
+					}
 				},
-				'plugins' : ['dnd']
+				'grid': {
+						columns: [
+							{ width: 170, title:"_DATA_" },
+							{ cellClass: "col1", value: "icon", width: 40, title:"icon" },
+						],
+						resizable:true
+					},
+				"dnd": {
+					check_while_dragging: true
+				},
+				'plugins' : ['dnd', 'types', 'themes', 'json']
 			}).on("select_node.jstree", function (e, data) {
-           		document.location = data.instance.get_node(data.node, true).children('a').attr('href');
-    		});
+		   		document.location = data.instance.get_node(data.node, true).children('a').attr('href');
+			}).bind("hover_node.jstree", function (e, data) 
+			{
+				$(".ctx").remove();
+				if(data.node.parent != '#') {
+				    var id = data.node.id;
+				    $('#'+id).append('<a href="/admin/categories/'+data.node.id+'" class="ctx" style="width:10px;top:0;height:10px;background:red;margin:7px;position:absolute;right:0;display:block;"></a>');
+				}
+			});
 		 });
 	</script>
 </body>
