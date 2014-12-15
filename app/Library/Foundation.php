@@ -14,6 +14,20 @@ class Foundation {
 		$this->addContent(Form::open($parameters));
 	}
 
+        public function addText($name, $label = '', $default = '')
+        {
+            $data['label'] = Form::label($name, $label, array('class' => 'right inline'));
+            $data['field'] = Form::text($name, $default);
+            $html = View::make('forms/row', $data);
+            
+            $this->addContent($html);
+        }
+        
+        public function addHidden($name, $default = '')
+        {
+            $this->addContent(Form::hidden($name, $default));
+        }
+        
 	public function closeForm($submit = 'Save', $back = '') 
 	{
 		$content = '';

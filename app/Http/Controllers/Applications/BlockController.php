@@ -4,6 +4,7 @@ use App\Http\Controllers\PanelController;
 use View;
 use DB;
 use Foundation;
+use Input;
 
 class BlockController extends PanelController {
 	
@@ -12,7 +13,6 @@ class BlockController extends PanelController {
 	public function additionalMenu()
 	{
 		$html = '<ul class="pricing-table"> <li class="title">Menu aplikacji</li>';
-
 		$html .= '<li class="bullet-item"><a style="width:100%; margin-bottom:5px;"href="/admin/blocks/home" class="button tiny">
 					HomePage Block
 				  </a></li>
@@ -54,15 +54,14 @@ class BlockController extends PanelController {
 		$form['url'] = 'admin/blocks/'.$this->section;
 		
 		$ff->startForm($form);
+                
 		//wszystkie bloczki
-		$imitateDatabaseList = array(
-			array('name' => 'Block1', 'id' => '1'),
-			array('name' => 'Block2', 'id' => '2'),
-			array('name' => 'Block3', 'id' => '3'),
-			array('name' => 'Block4', 'id' => '4'),
-			array('name' => 'Block5', 'id' => '5'),
-		);
-
+                $blocklist = array();
+                $list = DB::select("select * from core_block where lang = 'pl'");
+                foreach((array)$list as $blocks) {
+                     $blocklist[$blocks->id] = array('id' => $blocks->id, 'name' => $blocks->nazwa);
+                }
+                
 		//rozmieszczone bloczki
 		$list = DB::select("
 			SELECT 
@@ -82,18 +81,22 @@ class BlockController extends PanelController {
 
 		$placed = array();
 		foreach($list as $element) {
-			$placed[$element->block_id] = array('region' => $element->region, 'position' => $element->position);
+                        if(isset($blocklist[$element->block_id]))
+                                $placed[$element->block_id] = array(
+                                        'region' => $element->region,
+                                        'position' => $element->position
+                                );
 		}
 
 		$position = 0;
-		foreach($imitateDatabaseList as $block) {
+		foreach($blocklist as $block) {
 			if(isset($placed[$block['id']])) $region = $placed[$block['id']];
 			else $region = array('region' => '0', 'position' => ++$position);
 
 			$data['block'][$region['region']][$region['position']] = array('id' => $block['id'], 'name' => $block['name']);
 			ksort($data['block'][$region['region']]);
 		}
-
+                
 		$html = View::make('admin/blocks_controller', $data);
 		
 		$ff->addContent($html);
@@ -132,6 +135,7 @@ class BlockController extends PanelController {
 				 		'region' => $region, 'block_id' => $block_id, 'position' => $record);
 				}
 			}
+                       
 			DB::table('core_block_position_row')->insert($blocks);
 		}
 
@@ -145,6 +149,42 @@ class BlockController extends PanelController {
 		$this->section = 'default';
 		return $this->post_home();
 	}
+        
+        public function get_edit()
+        {
+            $this->id = $this->getRouter()->current()->getParameter('id');
+            list($lang, $id) = explode('_', $this->id);
+            $data = DB::table('core_block')->where('lang', $lang)->where('id', $id)->first();
+            $edit = json_decode($data->config);
+            
+            $ff = new Foundation;
+            $form['url'] = 'admin/blocks/' . $this->action . '/' . $this->id;
+            $ff->startForm($form);
+            $ff->addHidden('id',$data->id);
+            $ff->addHidden('lang',$data->lang);
+            $ff->addText('nazwa','LABEL',$data->nazwa);
+            require app_path('Http/Controllers/Blocks/TestBlock/BlockEdit.php');
+            $ff->closeForm();
 
+            return $ff->show();
 
+        }
+        
+        public function post_edit()
+        {
+            
+            $input = Input::all();
+            $data = $input;
+            unset($data['id']);
+            unset($data['lang']);
+            unset($data['nazwa']);
+            unset($data['_token']);
+            
+            DB::table('core_block')
+                ->where('id', $input['id'])
+                ->where('lang', $input['lang'])
+                ->update(array('nazwa' => $input['nazwa'], 'config' => json_encode($data)));
+            
+            return $this->get_edit();
+        }
 }

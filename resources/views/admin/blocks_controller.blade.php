@@ -57,6 +57,21 @@ button {
 ul.droptrue { list-style-type: none; margin: 1%; padding: 0; background: #eee; width: 98%; height:98%; position: absolute; top:1%; left:1%;}
 ul.droptrue li { font-size: 1.2em; width: 100%; }
 .ui-state-highlight { background: red; min-height: 20px;}
+
+.tabs {
+	display: table;
+	width: 100%;
+}
+
+.tabs dd {
+	display: table-cell;
+	float: none;
+}
+
+.tabs dd a {
+	text-align: center;
+}
+
 </style>
 <script>
 	$(function() {
@@ -84,10 +99,10 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 </script>
 
 <div class="row">
-	<div class="small-3 columns sidebar">
+	<div class="small-3 large-3 columns sidebar">
 		@include('admin/region', array('block'=> $block, 'id' => '0' ))
 	</div>
-	<div class="small-6 columns">
+	<div class="small-9 large-6 columns">
 		<div class="container">
 			<div class="header">
 				@include('admin/region', array('block'=> $block, 'id' => '1' ))
@@ -108,6 +123,6 @@ ul.droptrue li { font-size: 1.2em; width: 100%; }
 			</div>
 		</div>
 	</div>
-	<div class="small-3 columns">
+	<div class="small-0 large-3 columns">
 	</div>
 </div>

@@ -43,13 +43,12 @@ class CategoryController extends PanelController {
 
 	public function get_blockSetting()
 	{
-		$imitateDatabaseList = array(
-			array('name' => 'Block1', 'id' => '1'),
-			array('name' => 'Block2', 'id' => '2'),
-			array('name' => 'Block3', 'id' => '3'),
-			array('name' => 'Block4', 'id' => '4'),
-			array('name' => 'Block5', 'id' => '5'),
-		);
+		//wszystkie bloczki
+                $blocklist = array();
+                $list = DB::select("select * from core_block where lang = 'pl'");
+                foreach((array)$list as $blocks) {
+                     $blocklist[] = array('id' => $blocks->id, 'name' => $blocks->config);
+                }
 
 		//rozmieszczone bloczki
 		$list = DB::select("
@@ -74,7 +73,7 @@ class CategoryController extends PanelController {
 		}
 
 		$position = 0;
-		foreach($imitateDatabaseList as $block) {
+		foreach($blocklist as $block) {
 			if(isset($placed[$block['id']])) $region = $placed[$block['id']];
 			else $region = array('region' => '0', 'position' => ++$position);
 

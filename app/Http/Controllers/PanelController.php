@@ -32,7 +32,9 @@ abstract class PanelController extends Controller {
 
 		$data['content'] = $this->getContent();
 		$data['menumodulu'] = $this->additionalMenu();
-		$data['menukategorii'] = $this->categoryMenu();
+                $kategorie = $this->categoryMenu();
+		$data['menukategorii'] = $kategorie['container'];
+		$data['struktura'] = $kategorie['tree'];
 
 		return View::make('admin/master', $data);
 	}
@@ -49,23 +51,27 @@ abstract class PanelController extends Controller {
 
 	public function categoryMenu()
 	{
-		$menu = '<br>';
+		$menu = array();
+                $tree = array();
 
-		$list = DB::select('select * from core_categories where id <> 0 ');
-		foreach((array) $list as $cat) {
-			//$menu .= '<a href="/admin/'.$cat->lang.$cat->id.'">'.$cat->name.'</a><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'"><span style="float:right; display:inline-block; padding: 3px; background:red; margin-top:10px;"></span></a><br>';
-			$menu .= '<a style="width:100%; margin-bottom:5px;"href="/admin/'.$cat->lang.$cat->id.'" class="button tiny full split">'.$cat->name.'
-						<span data-dropdown="drop"></span>
-					  </a>
-					  <ul id="drop" class="f-dropdown" data-dropdown-content>
-					  	<li><a href="/admin/categories/'.$cat->lang.'_'.$cat->id.'">Zarzadzaj</a></li>
-					  	<li><a href="#">Usun</a></li>
-					  </ul>';
-		}
-
-		$menu = '<ul class="pricing-table"> <li class="title">Drzewko kategorii</li><li style="background:white;"> <div id="jstree_demo_div"></div></li></ul>';
-		
-
+		$list = DB::select("select * from core_block where lang = 'pl' and is_menu = TRUE");
+                foreach((array)$list as $menus) {
+                     $tree[] = array('id' => $menus->id, 'text' => $menus->nazwa, 'parent' => '#', 'state' => array('disabled' => 'true', 'opened' => 'true'), 'data' => array('icon' => "<div style='height:24px'>i</div>"));
+                }
+                
+                $list = DB::select('select * from core_categories where id <> 0');
+                foreach((array)$list as $cat) {
+                    if(!empty($cat->id_rodzica)) {
+                        $parent = $cat->lang.'_'.$cat->id_rodzica;
+                    } else {
+                        $parent = $cat->menu_block;
+                    }
+                    $tree[] = array('id' => $cat->lang.'_'.$cat->id, 'text' => $cat->name, 'parent' => $parent, 'a_attr' => array('href' => '/admin/'.$cat->lang.$cat->id), 'data' => array('icon' => "<div style='height:24px'>i</div>"));
+                }
+                
+		$menu['container'] = '<ul class="pricing-table"> <li class="title">Drzewko kategorii</li><li style="background:white;"> <div id="jstree_demo_div"></div></li></ul>';
+                $menu['tree'] = json_encode($tree);
+                
 		return $menu;
 	}
 }

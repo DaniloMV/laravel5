@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="pl">
+<html lang="pl"  class="no-js">
 <head>
+	<title>Panel administracyjny</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	{!! HTML::style('/packages/foundation/css/normalize.css') !!}
 	{!! HTML::style('/packages/foundation/css/foundation.css') !!}
+	{!! HTML::script('/packages/modernizr/modernizr.js') !!}
 	{!! HTML::script('/packages/jquery/dist/jquery.min.js') !!}
 	{!! HTML::script('/packages/jquery-ui/jquery-ui.min.js') !!}
+	{!! HTML::script('/packages/jqueryui-touch-punch/jquery.ui.touch-punch.min.js') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.structure.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.theme.min.css') !!}
@@ -37,14 +41,13 @@
 				 </ul>
 			 </section> 
 			 </nav>
-		
-		</div>	
+		</div>
 		<section>
-			<div class="small-12 large-2 columns" style="background:lightblue;">
+			<div class="small-12 large-3 columns" style="background:lightblue;">
 				{!! $menumodulu !!}
 				{!! $menukategorii !!}
 			</div>
-			<div class="small-12 large-10 columns">
+			<div class="small-12 large-9 columns">
 				{!! $content !!}
 			</div>
 		</section>
@@ -59,29 +62,21 @@
 		$(function () { 
 			$('#jstree_demo_div').jstree({ 
 				'core' : {
-					'data' : [
-					   { "id" : "ajson2", 'data': {'icon': "<div style='height:24px'></div>"}, "parent" : "#", "text" : "Blok kategorii top", "state" : { "disabled" : "true", "opened" : "true" } },
-					   { "id" : "pl_6", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson2", "text" : "Blog", "a_attr" : { 'href' : '/admin/pl2' } },
-					   { "id" : "pl_2", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson2", "text" : "Blog2", "a_attr" : { 'href' : '/admin/pl3' } },
-					   { "id" : "ajson1", 'data': {'icon': "<div style='height:24px'></div>"}, "parent" : "#", "text" : "Blok kategorii inny", "state" : { "disabled" : "true", "opened" : "true" } },
-					   { "id" : "pl_4", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson1", "text" : "Blogysg", "a_attr" : { 'href' : '/admin/pl2' } },
-					   { "id" : "pl_3", 'data': {'icon': "<div style='height:24px'>i</div>"}, "parent" : "ajson1", "text" : "Blogsdsdsd", "a_attr" : { 'href' : '/admin/pl3' } },
-					],
+					'data' : {!! $struktura !!},
 					 "themes" : {
 					      "variant" : "medium"
 					 },
 					"check_callback" : 
 						function(operation, node, node_parent, node_position, more) {
-					
-						if (operation === "move_node") {
-
-							if(node_parent.parent != null && node.parent != '#')
-								return true;
-							else 
-								return false;
+							if (operation === "move_node") {
+								if(node_parent.parent != null && node.parent != '#')
+									return true;
+								else
+									return false;
+							}
+							
+							return true;
 						}
-						return true;
-					}
 				},
 				'grid': {
 						columns: [
@@ -101,10 +96,44 @@
 				$(".ctx").remove();
 				if(data.node.parent != '#') {
 				    var id = data.node.id;
-				    $('#'+id).append('<a href="/admin/categories/'+data.node.id+'" class="ctx" style="width:10px;top:0;height:10px;background:red;margin:7px;position:absolute;right:0;display:block;"></a>');
+				    $('#'+id).append('<a href="/admin/categories/'+data.node.id+'" class="ctx" style="width:13px;top:0;height:13px;margin:3px 7px ;position:absolute;right:0;display:block;"><img src="{!! URL::asset('/') !!}static/images/settings.svg"></a>');
 				}
 			});
 		 });
+		 
+		 $("#jstree_demo_div").on('move_node.jstree', function (e, data) {
+				var tree = $("#jstree_demo_div").jstree(true);
+				var nodeE = tree.get_node(data.node.id);
+				var parents = nodeE.parents.length - 2;
+				var parent = nodeE.parents[parents];
+				
+				var actparent = nodeE.parent;
+				
+				if(nodeE.parents.length < 3) {
+					actparent = 'x_0';
+				}
+				
+				
+				$.ajax({
+					url: '/admin/ajax',
+					type: "GET",
+					dataType: "json",
+					data: {
+						action: 'move_category',
+						element_id: data.node.id,
+						menu_id: parent,
+						parent_id: actparent
+					},
+					success: function(data){
+						
+						
+						return true;
+					},
+					error: function(state, error){
+						return false;
+					}
+				});
+		});
 	</script>
 </body>
 </html>
