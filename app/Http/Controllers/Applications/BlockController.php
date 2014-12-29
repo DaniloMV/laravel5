@@ -152,6 +152,10 @@ class BlockController extends PanelController {
         
         public function get_edit()
         {
+            $class = 'TestBlock';
+            $name = "App\Http\Controllers\Blocks\\".$class."\Admin";
+            $obj = new $name();
+            
             $this->id = $this->getRouter()->current()->getParameter('id');
             list($lang, $id) = explode('_', $this->id);
             $data = DB::table('core_block')->where('lang', $lang)->where('id', $id)->first();
@@ -159,11 +163,12 @@ class BlockController extends PanelController {
             
             $ff = new Foundation;
             $form['url'] = 'admin/blocks/' . $this->action . '/' . $this->id;
+            echo $this->action;
             $ff->startForm($form);
             $ff->addHidden('id',$data->id);
             $ff->addHidden('lang',$data->lang);
             $ff->addText('nazwa','LABEL',$data->nazwa);
-            require app_path('Http/Controllers/Blocks/TestBlock/BlockEdit.php');
+            $obj->edit($ff,$edit);
             $ff->closeForm();
 
             return $ff->show();
@@ -172,18 +177,10 @@ class BlockController extends PanelController {
         
         public function post_edit()
         {
-            
-            $input = Input::all();
-            $data = $input;
-            unset($data['id']);
-            unset($data['lang']);
-            unset($data['nazwa']);
-            unset($data['_token']);
-            
-            DB::table('core_block')
-                ->where('id', $input['id'])
-                ->where('lang', $input['lang'])
-                ->update(array('nazwa' => $input['nazwa'], 'config' => json_encode($data)));
+            $class = 'TestBlock';
+            $name = "App\Http\Controllers\Blocks\\".$class."\Admin";
+            $obj = new $name();
+            $obj->save();
             
             return $this->get_edit();
         }

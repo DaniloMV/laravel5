@@ -30,6 +30,7 @@
     "tests"
   ],
   "devDependencies": {
-    "jqueryui-touch-punch": "*"
+    "jqueryui-touch-punch": "*",
+    "labjs": "*"
   }
 }

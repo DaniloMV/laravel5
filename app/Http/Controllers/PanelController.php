@@ -9,13 +9,11 @@ abstract class PanelController extends Controller {
 
 	public function __construct()
 	{
-		# wymagaj logowania
 		$this->middleware('auth');
 	}
 
 	public function init()
 	{
-		
 		$this->action = $this->getRouter()->current()->getParameter('action');
 		$this->method = $this->getRouter()->getCurrentRequest()->getMethod();
 		$route = $this->getRouter()->current();
@@ -30,18 +28,22 @@ abstract class PanelController extends Controller {
 
 		$this->call_action = strtolower($this->method).'_'.$this->action;
 
+                $kategorie = $this->categoryMenu();
 		$data['content'] = $this->getContent();
 		$data['menumodulu'] = $this->additionalMenu();
-                $kategorie = $this->categoryMenu();
 		$data['menukategorii'] = $kategorie['container'];
 		$data['struktura'] = $kategorie['tree'];
+                
+                $this->pushLabJS('/packages/foundation/js/foundation/foundation.tab.js',true);
+                
+                $data['LABscript'] = $this->renderLabsJS();
 
 		return View::make('admin/master', $data);
 	}
 
 	public function getContent()
 	{
-		return $this->{$this->call_action}();
+                return $this->callAction($this->call_action,array());
 	}
 
 	public function additionalMenu()

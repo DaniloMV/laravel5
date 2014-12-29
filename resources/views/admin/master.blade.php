@@ -2,25 +2,24 @@
 <html lang="pl"  class="no-js">
 <head>
 	<title>Panel administracyjny</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	{!! HTML::script('/packages/modernizr/modernizr.js') !!}
 	{!! HTML::style('/packages/foundation/css/normalize.css') !!}
 	{!! HTML::style('/packages/foundation/css/foundation.css') !!}
-	{!! HTML::script('/packages/modernizr/modernizr.js') !!}
-	{!! HTML::script('/packages/jquery/dist/jquery.min.js') !!}
-	{!! HTML::script('/packages/jquery-ui/jquery-ui.min.js') !!}
-	{!! HTML::script('/packages/jqueryui-touch-punch/jquery.ui.touch-punch.min.js') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.structure.min.css') !!}
 	{!! HTML::style('/packages/jquery-ui/jquery-ui.theme.min.css') !!}
 	{!! HTML::style('/packages/jstree/dist/themes/default/style.min.css') !!}
+	{!! $LABscript !!}
+	{!! HTML::script('/packages/jquery/dist/jquery.min.js') !!}
+	{!! HTML::script('/packages/jquery-ui/jquery-ui.min.js') !!}
+	{!! HTML::script('/packages/jqueryui-touch-punch/jquery.ui.touch-punch.min.js') !!}
 	{!! HTML::script('/packages/foundation/js/foundation.min.js') !!}
 	{!! HTML::script('/packages/jstree/dist/jstree.min.js') !!}
 	{!! HTML::script('/packages/jstree/dist/jstreegrid.js') !!}
-	{!! HTML::script('/packages/foundation/js/foundation/foundation.tab.js') !!}
 </head>
 <body>
 	<div class="welcome">
-
 		<div class="fixed">
 		<nav class="top-bar" data-topbar role="navigation">
 		<ul class="title-area">
@@ -112,7 +111,6 @@
 				if(nodeE.parents.length < 3) {
 					actparent = 'x_0';
 				}
-				
 				
 				$.ajax({
 					url: '/admin/ajax',

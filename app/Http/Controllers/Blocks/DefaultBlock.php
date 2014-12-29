@@ -8,15 +8,18 @@ abstract class DefaultBlock {
 	private $config = array (
 		'container' => 'containers/block',
 	);
+        
+        private $controller;
 
 	/* DefaultBlock::init()
 	 * Initiallize configuration for block
 	 * including its region specific
 	 */
-	public function init($region)
+	public function init($region, &$controller)
 	{
 		$cfg = array();
 		$this->class = get_called_class();
+                $this->controller = $controller;
 
 		$config = str_replace(array('\\', 'App/'),array('/',''),$this->class . 'Config.inc.php');
 		include app_path($config);
@@ -38,7 +41,11 @@ abstract class DefaultBlock {
 		return View::make($this->config['container'], $this->data);
 	}
 
-
+        public function pushLabJS($name, $wait = false)
+        {
+            $this->controller->pushLabJS($name, $wait);
+        }
+        
 	/* DefaultBlock::index()
 	 * Just for specification
 	 */

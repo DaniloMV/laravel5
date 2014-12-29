@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers\Modules;
 
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller as Controller;
 use App\Http\Controllers\Blocks as Blocks;
 use View;
 use DB;
@@ -69,7 +69,7 @@ abstract class DefaultController extends Controller {
 			$reg = 'region'.$element->region;
 			$classname = '\\App\\Http\\Controllers\\Blocks\\'.$variable.'\\Block';
 			$block = new $classname();
-			$block->init($reg);
+			$block->init($reg, $this);
 			if(!empty($this->data[$reg])) {
 				$part['p1'] = $this->data[$reg];
 				$part['p2'] = $block->render();

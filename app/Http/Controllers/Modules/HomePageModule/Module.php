@@ -7,6 +7,7 @@ class Module extends DefaultController {
 
 	public function index()
 	{
+                $this->data['LABscript'] = $this->renderLabsJS();
 		return View::make('hello', $this->data);
 	}
 
